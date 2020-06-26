@@ -1,0 +1,92 @@
+server:
+  port: 8092
+
+
+#开发环境配置
+spring:
+  application:
+    name: springboot-dubbo-commodity
+  datasource:
+    name: springboot-dubbo-commodity
+    type: com.alibaba.druid.pool.DruidDataSource
+    #druid相关配置
+    druid:
+      #mysql驱动
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      #基本属性
+      url: jdbc:mysql://127.0.0.1:3306/permission?useUnicode=true&useAffectedRows=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true&failOverReadOnly=false
+      username: root
+      password: 12345678
+      #配置初始化大小/最小/最大
+      initial-size: 10
+      min-idle: 10
+      max-active: 20
+      #获取连接等待超时时间
+      max-wait: 60000
+      #间隔多久进行一次检测，检测需要关闭的空闲连接
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-return: false
+      test-on-borrow: false
+      #打开PSCache，并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      web-stat-filter:
+        session-stat-enable: true
+        #????
+        principal-session-name: admin
+        url-pattern: /*
+        session-stat-max-count: 100000
+        exclusions: '*.js,/*.gif,/*.jpg,/*.png,/*.css,/*.ico,/druid/*'
+        enabled: true
+        #????
+        principal-cookie-name: admin
+        profile-enable: true
+      filters: stat,wall
+      filter:
+        stat:
+          db-type: mysql
+          log-slow-sql: true
+          slow-sql-millis: 2000
+        wall:
+          log-violation: true
+          db-type: mysql
+          config:
+            delete-allow: true
+            truncate-allow: false
+            drop-table-allow: false
+          enabled: true
+      stat-view-servlet:
+        url-pattern: /druid/*
+        reset-enable: true
+        login-username: root
+        login-password: 123456
+        enabled: true
+
+  ## thymaleaf
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/static/
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template-location: true
+    encoding: UTF-8
+    mode: LEGACYHTML5
+    cache: false
+
+
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.dingding.kill.entity
+  configuration:
+    # 使用jdbc的getGeneratedKeys 可以获取数据库自增主键值
+    use-generated-keys: true
+    # 使用列别名替换列名，默认true。如：select name as title from table
+    use-column-label: true
+    # 开启驼峰命名转换，如：Table(create_time) -> Entity(createTime)。不需要我们关心怎么进行字段匹配，mybatis会自动识别`大写字母与下划线`
+    map-underscore-to-camel-case: true
